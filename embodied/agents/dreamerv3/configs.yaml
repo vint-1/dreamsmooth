@@ -52,8 +52,8 @@ defaults:
     log_video_streams: 1
     log_video_timeout: 60
     wandb: False
-    wandb_entity: robot-learning
-    wandb_project: earth-moving
+    wandb_entity: entity1
+    wandb_project: project1
     from_checkpoint: ''
     actor_host: 'localhost'
     actor_port: '5551'
