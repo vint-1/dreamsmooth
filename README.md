@@ -1,31 +1,63 @@
 # DreamSmooth: Improving Model-based Reinforcement Learning via Reward Smoothing
+[Project Website](https://vint-1.github.io/dreamsmooth)
 
-This code is built on top of the official DreamerV3 implementation (https://github.com/danijar/embodied/tree/unstable).
+## Overview
 
-## Prerequisites
+### Reward Prediction is Important in MBRL
+
+State-of-the-art MBRL algorithms like DreamerV3 and TD-MPC use reward models to predict the rewards that an agent would have obtained for some imagined trajectory. The predicted rewards are vital because they are used to derive a policy — overestimating reward causes the agent to choose actions that perform poorly in reality, and underestimating will lead an agent to ignore high rewards.
+
+### Reward Prediction is Challenging
+
+Even for state-of-the-art MBRL algorithms, reward prediction in sparse-reward environments, especially those with **partial observability** or **stochastic rewards**, is challenging. We find that for a number of environments, including [Robodesk](https://github.com/google-research/robodesk), [ShadowHand](https://robotics.farama.org/envs/shadow_dexterous_hand/manipulate_block/), and [Crafter](https://github.com/danijar/crafter), DreamerV3's reward model struggles to accurately predict sparse rewards.
+
+The following plots show predicted and ground truth rewards over a single episode, with mistakes highlighted in yellow.
+
+![Reward prediction is challenging](/assets/unsmooth_trajectories.png "trajectories for different environments, showing poor reward prediction by dreamerv3")
+
+
+### Our Solution: Temporally Smoothed Rewards
+
+We propose DreamSmooth, which performs temporal smoothing of the rewards obtained in each rollout before adding them to the replay buffer. Our method makes learning a reward model easier, especially when rewards are ambiguous or sparse.
+
+Our method is extremely simple, requiring only **several lines of code changes** to existing algorithms, while incurring **minimal overhead**.
+
+Our experiments show that with our method, the reward models no longer omit sparse rewards from its output, and are able to predict them accurately.
+
+![Dreamsmooth improves reward prediction](/assets/smooth_trajectories.png "trajectories for different environments, showing accurate reward prediction by dreamsmooth")
+
+Moreover, the improved reward predictions of DreamSmooth translates to better performance. We studied several different smoothing techniques (Gaussian, uniform, exponential moving average) on many sparse-reward environments, and find that our method outperforms the base DreamerV3 model.
+
+![Dreamsmooth improves performance](/assets/performance.png "learning curves for different environments, showing dreamsmooth outperforms dreamerv3")
+
+## Quickstart
+
+This code is built on top of the official [DreamerV3 implementation](https://github.com/danijar/embodied/tree/unstable).
+
+### Prerequisites
 
 * Ubuntu 22.04
 * Python 3.9+
 
 
-## Installation
+### Installation
 * Install [DreamerV3 dependencies](https://github.com/danijar/dreamerv3)
 * Install dependencies
     ```
     pip install -r requirements.txt
     ```
 
-## Environments
+### Environments
 * Modified robodesk and hand environments can be found in `embodied/envs/robodesk.py` and `embodied/envs/hand.py`
 
 
-## Important directories and files
+### Important directories and files
 * `embodied/core/smoothing.py`: reward smoothing implementation
 * `embodied/agents/dreamerv3/configs.yaml`: configs
 * `scripts`: scripts for running experiments
 
 
-## Run experiments
+### Run experiments
 Replace [EXP_NAME] with name of the experiment, [GPU] with the GPU number you wish to use, and [WANDB_ENTITY] and [WANDB_PROJECT] with the W&B entity/project you want to log to. [SMOOTHING_METHOD] should be `gaussian`, `uniform`, `exp`, or `no` (for no smoothing).
 * Running experiments on Robodesk
     ```
@@ -52,7 +84,7 @@ Replace [EXP_NAME] with name of the experiment, [GPU] with the GPU number you wi
     source scripts/d3_dmc_train.sh [EXP_NAME] [TASK] [GPU] [SEED] [SMOOTHING_METHOD] [SMOOTHING_PARAMETER] [WANDB_ENTITY] [WANDB_PROJECT]
     ```
 
-## Examples
+### Examples
 * Gaussian Smoothing with sigma = 3 on Robodesk
     ```
     source scripts/d3_robodesk_train.sh example_01 [GPU] 1 gaussian 3 [WANDB_ENTITY] [WANDB_PROJECT]
@@ -62,3 +94,14 @@ Replace [EXP_NAME] with name of the experiment, [GPU] with the GPU number you wi
     ```
     source scripts/d3_hand_train.sh example_03 [GPU] 1 uniform 5 [WANDB_ENTITY] [WANDB_PROJECT]
     ```
+
+## Citation
+
+```
+@article{lee2023dreamsmooth,
+  author    = {Vint Lee and Pieter Abbeel and Youngwoon Lee},
+  title     = {DreamSmooth: Improving Model-based Reinforcement Learning via Reward Smoothing},
+  journal   = {????},
+  year      = {2023},
+}
+```
