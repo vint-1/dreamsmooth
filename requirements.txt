@@ -1,0 +1,17 @@
+imageio
+imageio-ffmpeg
+ipdb
+numpy
+scipy
+matplotlib
+plotly
+moviepy
+opencv-python
+wandb
+
+# environments
+gymnasium-robotics
+dm_control
+ale-py
+gym[accept-rom-license]
+robodesk
