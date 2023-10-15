@@ -5,13 +5,13 @@
 
 ### Reward Prediction is Important in MBRL
 
-State-of-the-art MBRL algorithms like DreamerV3 and TD-MPC use reward models to predict the rewards that an agent would have obtained for some imagined trajectory. The predicted rewards are vital because they are used to derive a policy — overestimating reward causes the agent to choose actions that perform poorly in reality, and underestimating will lead an agent to ignore high rewards.
+Reward models, which predict the rewards that an agent would have obtained for some imagined trajectory, play a vital role in state-of-the-art MBRL algorithms like DreamerV3 and TD-MPC because the policy learns from predicted rewards.
 
 ### Reward Prediction is Challenging
 
-Even for state-of-the-art MBRL algorithms, reward prediction in sparse-reward environments, especially those with **partial observability** or **stochastic rewards**, is challenging. We find that for a number of environments, including [Robodesk](https://github.com/google-research/robodesk), [ShadowHand](https://robotics.farama.org/envs/shadow_dexterous_hand/manipulate_block/), and [Crafter](https://github.com/danijar/crafter), DreamerV3's reward model struggles to accurately predict sparse rewards.
+Reward prediction in sparse-reward environments, especially those with **partial observability** or **stochastic rewards**, is surprisingly challenging.
 
-The following plots show predicted and ground truth rewards over a single episode, with mistakes highlighted in yellow.
+The following plots show predicted and ground truth rewards over a single episode, in several environments (including [Robodesk](https://github.com/google-research/robodesk), [ShadowHand](https://robotics.farama.org/envs/shadow_dexterous_hand/manipulate_block/), and [Crafter](https://github.com/danijar/crafter)), with mispredicted sparse rewards highlighted in yellow.
 
 ![Reward prediction is challenging](/assets/unsmooth_trajectories.png "trajectories for different environments, showing poor reward prediction by dreamerv3")
 
@@ -20,9 +20,7 @@ The following plots show predicted and ground truth rewards over a single episod
 
 We propose DreamSmooth, which performs temporal smoothing of the rewards obtained in each rollout before adding them to the replay buffer. Our method makes learning a reward model easier, especially when rewards are ambiguous or sparse.
 
-Our method is extremely simple, requiring only **several lines of code changes** to existing algorithms, while incurring **minimal overhead**.
-
-Our experiments show that with our method, the reward models no longer omit sparse rewards from its output, and are able to predict them accurately.
+With our method, the reward models no longer omit sparse rewards from its output, predicting them accurately.
 
 ![Dreamsmooth improves reward prediction](/assets/smooth_trajectories.png "trajectories for different environments, showing accurate reward prediction by dreamsmooth")
 
@@ -48,17 +46,17 @@ This code is built on top of the official [DreamerV3 implementation](https://git
     ```
 
 ### Environments
-* Modified robodesk and hand environments can be found in `embodied/envs/robodesk.py` and `embodied/envs/hand.py`
+* Modified robodesk and hand environments can be found in [`embodied/envs/robodesk.py`](embodied/envs/robodesk.py) and [`embodied/envs/hand.py`](embodied/envs/hand.py)
 
 
 ### Important directories and files
-* `embodied/core/smoothing.py`: reward smoothing implementation
-* `embodied/agents/dreamerv3/configs.yaml`: configs
-* `scripts`: scripts for running experiments
+* [`embodied/core/smoothing.py`](embodied/core/smoothing.py): reward smoothing implementation
+* [`embodied/agents/dreamerv3/configs.yaml`](embodied/agents/dreamerv3/configs.yaml): configs
+* [`scripts`](scripts/): scripts for running experiments
 
 
 ### Run experiments
-Replace [EXP_NAME] with name of the experiment, [GPU] with the GPU number you wish to use, and [WANDB_ENTITY] and [WANDB_PROJECT] with the W&B entity/project you want to log to. [SMOOTHING_METHOD] should be `gaussian`, `uniform`, `exp`, or `no` (for no smoothing).
+Replace `[EXP_NAME]` with name of the experiment, `[GPU]` with the GPU number you wish to use, and `[WANDB_ENTITY]` and `[WANDB_PROJECT]` with the W&B entity/project you want to log to. `[SMOOTHING_METHOD]` should be `gaussian`, `uniform`, `exp`, or `no` (for no smoothing).
 * Running experiments on Robodesk
     ```
     source scripts/d3_robodesk_train.sh [EXP_NAME] [GPU] [SEED] [SMOOTHING_METHOD] [SMOOTHING_PARAMETER] [WANDB_ENTITY] [WANDB_PROJECT]
