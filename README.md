@@ -103,7 +103,9 @@ Replace `[EXP_NAME]` with name of the experiment, `[GPU]` with the GPU number yo
 @article{lee2023dreamsmooth,
   author    = {Vint Lee and Pieter Abbeel and Youngwoon Lee},
   title     = {DreamSmooth: Improving Model-based Reinforcement Learning via Reward Smoothing},
-  journal   = {????},
   year      = {2023},
+  eprint    = {2311.01450},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.LG}
 }
 ```
