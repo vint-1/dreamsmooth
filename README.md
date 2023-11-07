@@ -1,6 +1,6 @@
 # DreamSmooth: Improving Model-based Reinforcement Learning via Reward Smoothing
 [Project Website](https://vint-1.github.io/dreamsmooth)
-
+[Paper](https://arxiv.org/abs/2311.01450)
 
 https://github.com/vint-1/dreamsmooth-code/assets/73736043/b93b0017-b809-4191-b589-2bd061d626b2
 
