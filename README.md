@@ -101,12 +101,11 @@ Replace `[EXP_NAME]` with name of the experiment, `[GPU]` with the GPU number yo
 ## Citation
 
 ```
-@article{lee2023dreamsmooth,
+@inproceedings{lee2024dreamsmooth,
   author    = {Vint Lee and Pieter Abbeel and Youngwoon Lee},
   title     = {DreamSmooth: Improving Model-based Reinforcement Learning via Reward Smoothing},
-  year      = {2023},
-  eprint    = {2311.01450},
-  archivePrefix = {arXiv},
-  primaryClass = {cs.LG}
+  booktitle = {The Twelfth International Conference on Learning Representations},
+  year      = {2024},
+  url       = {https://openreview.net/forum?id=GruDNzQ4ux}
 }
 ```
