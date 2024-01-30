@@ -102,19 +102,10 @@ Replace `[EXP_NAME]` with name of the experiment, `[GPU]` with the GPU number yo
 
 ```
 @inproceedings{lee2024dreamsmooth,
-<<<<<<< HEAD
-        author    = {Vint Lee and Pieter Abbeel and Youngwoon Lee},
-        title     = {DreamSmooth: Improving Model-based Reinforcement Learning via Reward Smoothing},
-        booktitle = {The Twelfth International Conference on Learning Representations},
-        year      = {2024},
-        url       = {https://openreview.net/forum?id=GruDNzQ4ux}
-      }
-=======
   author    = {Vint Lee and Pieter Abbeel and Youngwoon Lee},
   title     = {DreamSmooth: Improving Model-based Reinforcement Learning via Reward Smoothing},
   booktitle = {The Twelfth International Conference on Learning Representations},
   year      = {2024},
   url       = {https://openreview.net/forum?id=GruDNzQ4ux}
 }
->>>>>>> 282be0e2958c66fa667f78cbafccac3e2755999f
 ```
