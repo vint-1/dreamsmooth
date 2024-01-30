@@ -1,6 +1,11 @@
 # DreamSmooth: Improving Model-based Reinforcement Learning via Reward Smoothing
 [Project Website](https://vint-1.github.io/dreamsmooth)
 
+[Paper](https://arxiv.org/abs/2311.01450)
+
+https://github.com/vint-1/dreamsmooth-code/assets/73736043/b93b0017-b809-4191-b589-2bd061d626b2
+
+
 ## Overview
 
 ### Reward Prediction is Important in MBRL
@@ -97,10 +102,19 @@ Replace `[EXP_NAME]` with name of the experiment, `[GPU]` with the GPU number yo
 
 ```
 @inproceedings{lee2024dreamsmooth,
+<<<<<<< HEAD
         author    = {Vint Lee and Pieter Abbeel and Youngwoon Lee},
         title     = {DreamSmooth: Improving Model-based Reinforcement Learning via Reward Smoothing},
         booktitle = {The Twelfth International Conference on Learning Representations},
         year      = {2024},
         url       = {https://openreview.net/forum?id=GruDNzQ4ux}
       }
+=======
+  author    = {Vint Lee and Pieter Abbeel and Youngwoon Lee},
+  title     = {DreamSmooth: Improving Model-based Reinforcement Learning via Reward Smoothing},
+  booktitle = {The Twelfth International Conference on Learning Representations},
+  year      = {2024},
+  url       = {https://openreview.net/forum?id=GruDNzQ4ux}
+}
+>>>>>>> 282be0e2958c66fa667f78cbafccac3e2755999f
 ```
