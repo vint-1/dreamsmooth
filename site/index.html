@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Reward smoothing improves performance of model-based RL on sparse-reward tasks.">
+  <meta name="keywords" content="DreamSmooth, MBRL, Dreamer, Reward, Smoothing">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DreamSmooth: Improving MBRL via Reward Smoothing</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">DreamSmooth</h1>
+          <h1 class="title is-4 publication-subtitle">Improving Model-based Reinforcement Learning via Reward Smoothing</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://github.com/vint-1">Vint Lee</a>,</span>
+            <span class="author-block">
+              <a href="https://people.eecs.berkeley.edu/~pabbeel/">Pieter Abbeel</a>,</span>
+            <span class="author-block">
+              <a href="https://youngwoon.github.io/">Youngwoon Lee</a>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">UC Berkeley</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <!-- TODO: update the links -->
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <!-- <span class="link-block">
+                <a href="https://vint-1.github.io/dreamsmooth/" 
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2311.01450"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span> 
+              <!-- Video Link.
+              <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/vint-1/dreamsmooth-code"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+        <img src="./static/images/teaser.png" class="teaser-image">
+      <h2 class="subtitle has-text-centered">
+        <span class="technique-name">Dreamsmooth</span> achieves better performance by improving reward prediction on sparse-reward tasks.
+      </h2>
+    </div>
+  </div>
+</section>
+-->
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Model-based reinforcement learning (MBRL) has gained much attention for its ability to learn complex behaviors in a sample-efficient way: 
+              planning actions by generating imaginary trajectories with predicted rewards.
+              Despite its success, we found surprisingly that <b>reward prediction is often a bottleneck of MBRL</b>, 
+              especially for sparse rewards that are challenging (or even ambiguous) to predict.
+
+              Motivated by the intuition that humans can learn from rough reward estimates, we propose a simple yet effective reward smoothing approach, 
+              <span class="technique-name">DreamSmooth</span>, which learns to <b>predict a temporally-smoothed reward</b>, instead of the exact reward at the given timestep. 
+
+              We empirically show that <span class="technique-name">DreamSmooth</span> achieves state-of-the-art performance on long-horizon sparse-reward tasks 
+              both in sample efficiency and final performance without losing performance on common benchmarks, 
+              such as Deepmind Control Suite and Atari benchmarks.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!--/ Abstract. -->
+    </div>
+  </div>
+</section>
+
+
+<!-- <section class="section">
+  <div class="container is-max-desktop">
+    
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section> -->
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!-- Method Overview. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Method Overview</h2>
+        <!-- TODO add figures for these -->
+        <h3 class="title is-4">Reward Prediction is Important in MBRL</h3>
+        <div class="content has-text-justified">
+          <p>
+            State-of-the-art MBRL algorithms like DreamerV3 and TD-MPC use reward models to predict the rewards
+            that an agent would have obtained for some imagined trajectory. 
+            The predicted rewards are vital because they are used to derive a policy — overestimating reward causes the agent to choose actions that perform poorly in reality,
+            and underestimating will lead an agent to ignore high rewards.
+          </p>
+        </div>
+        <!-- Current Algorithms. -->
+        <h3 class="title is-4">However, Reward Prediction is Challenging</h3>
+        <div class="content has-text-justified">
+          
+          <p>
+            We find that in many sparse-reward environments, especially those with
+            <b>partial observability</b> or <b>stochastic rewards</b>,
+            reward prediction is surprisingly challenging.
+            Specifically, the squared-error loss function used in many algorithms require reward models to
+            predict sparse rewards at the exact timestep, which is difficult in many environments, even for humans.
+            In such cases, predicting a sparse reward even one timestep too early or too late incurs a large loss,
+            more than simply predicting no reward at all timesteps.
+          </p>
+
+          <div class="column is-full-width"> 
+            <img src="./static/images/task-intro.png"
+                   class="image"
+                   width="85%"
+                   alt="Prediction of sparse rewards can be very difficult, even for humans."/>
+          </div>
+
+          <p>
+            The model therefore minimizes loss by frequently omitting sparse rewards from its predictions.
+            We observe this in several environments - 
+            the following are plots, in each environment, of predicted and ground truth rewards over a single episode, 
+            for a trained DreamerV3 agent. The sparse rewards omitted by the reward model are highlighted in yellow.
+          </p>
+
+          <div class="columns is-centered">
+            <div class="column">
+              <!-- Robodesk -->
+              <div class="content">
+                <h2 class="title is-5 plot-title">Robodesk</h2>
+                <img src="./static/images/trajectories/openl_rew_plot_24796456_c12daa47e19d3c5c03e7.plotly.json.svg"
+                   class="image"
+                   alt="Robodesk environment ground truth and predicted rewards over 1 episode."/>
+              </div>
+              <!-- Earthmoving -->
+              <div class="column">
+                <div class="content">
+                  <h2 class="title is-5 plot-title">Earthmoving</h2>
+                  <img src="./static/images/trajectories/openl_rew_plot_11996960_97811008d72d791fe486.plotly.json.svg"
+                     class="image"
+                     alt="Earthmoving environment ground truth and predicted rewards over 1 episode."/>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Hand -->
+            <div class="column">
+              <div class="content">
+                <h2 class="title is-5 plot-title">ShadowHand</h2>
+                <img src="./static/images/trajectories/openl_rew_plot_20124500_c58e783e02fdceb32c6b.plotly.json.svg"
+                   class="image"
+                   alt="Shadow hand environment ground truth and predicted rewards over 1 episode."/>
+              </div>
+
+              <div class="column">
+                <div class="content">
+                  <h2 class="title is-5 plot-title">Crafter</h2>
+                  <img src="./static/images/trajectories/openl_rew_plot_6324773_9de006955fda4665830e.plotly.json.svg"
+                     class="image"
+                     alt="Crafter environment ground truth and predicted rewards over 1 episode."/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column is-full-width"> 
+            <img src="./static/images/trajectories/trajectory_unsmoothed_legend.svg"
+                   class="image plot-legend"
+                   alt="Legend for reward plots over 1 episode."/>
+          </div>
+
+          <p>
+            Notice that in all 4 environments, the reward model predicts 0 reward 
+            even when the agent completes the task successfully.
+          </p>
+
+        </div>
+        <!--/ Current Algorithms. -->
+
+        <!-- Our Solution. -->
+        <h3 class="title is-4">Our Solution: Temporally Smoothed Rewards</h3>
+        <div class="content has-text-justified">
+          <p>
+            We propose <span class="technique-name">DreamSmooth</span>, 
+            which performs temporal smoothing of the rewards obtained in each rollout before adding them to the replay buffer. 
+            By allowing the reward model to predict rewards that are off from the ground truth by a few timesteps without incurring large losses, 
+            our method makes learning easier, especially when rewards are ambiguous or sparse.
+          </p>
+          <p>
+            Our method is extremely simple, requiring <b>only several lines of code changes</b> to existing algorithms,
+            while incurring <b>minimal overhead</b>.
+          </p>
+          <p>
+            In this work, we investigate three popular smoothing functions: 
+            Gaussian, uniform, and exponential moving average (EMA) smoothing.
+            The plots below illustrate the effect of these functions on reward signals for various values of smoothing parameters.
+          </p>
+        </div>
+        <div class="columns is-centered">
+
+          <!-- Gaussian -->
+          <div class="column">
+            <div class="content">
+              <h2 class="title is-5 plot-title">Gaussian Smoothing</h2>
+              <img src="./static/images/gaussian.svg"
+                 class="image"
+                 alt="Rewards before and after Gaussian smoothing."/>
+            </div>
+          </div>
+
+          <!-- Uniform -->
+          <div class="column">
+            <div class="content">
+              <h2 class="title is-5 plot-title">Uniform Smoothing</h2>
+              <img src="./static/images/uniform.svg"
+                 class="image"
+                 alt="Rewards before and after Uniform smoothing."/>
+            </div>
+          </div>
+
+          <!-- EMA -->
+          <div class="column">
+            <div class="content">
+              <h2 class="title is-5 plot-title">EMA Smoothing</h2>
+              <img src="./static/images/ema.svg"
+                 class="image"
+                 alt="Rewards before and after EMA smoothing."/>
+            </div>
+          </div>
+
+        </div>
+        <!--/ Our Solution. -->
+
+      </div>
+    </div>
+    <!--/ Method Overview. -->
+
+    <!-- Results. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Results</h2>
+
+        <!-- Reward predictions improved -->
+        <h3 class="title is-4">Smoothed Rewards are Easier to Predict</h3>
+        <div class="content has-text-justified"> 
+          <p>
+            We find that our method makes reward prediction much easier. On many tasks, <span class="technique-name">DreamSmooth</span>
+            is able to predict sparse rewards much more accurately than vanilla DreamerV3, which we use as our base algorithm.
+            The following plots show predicted, smoothed, and ground truth rewards over the course of a single episode in various envionments.
+          </p>
+        </div>
+        
+        <div class="columns is-centered">
+
+          
+          <div class="column">
+            <!-- Robodesk -->
+            <div class="content">
+              <h2 class="title is-5 plot-title">Robodesk</h2>
+              <img src="./static/images/trajectories/openl_rew_plot_24397856_3eb889d9779e6a8d3048.plotly.json.svg"
+                 class="image"
+                 alt="Robodesk environment ground truth and predicted rewards over 1 episode."/>
+            </div>
+            
+            <!-- Earthmoving -->
+            <div class="content">
+              <h2 class="title is-5 plot-title">Earthmoving</h2>
+              <img src="./static/images/trajectories/openl_rew_plot_12392736_61e5b00c2912a779f94b.plotly.json.svg"
+                 class="image"
+                 alt="Earthmoving environment ground truth and predicted rewards over 1 episode."/>
+            </div>
+          </div>
+
+          <div class="column">
+            <!-- Hand -->
+            <div class="content">
+              <h2 class="title is-5 plot-title">ShadowHand</h2>
+              <img src="./static/images/trajectories/openl_rew_plot_20174224_025861757d8428e33328.plotly.json.svg"
+                 class="image"
+                 alt="Shadow hand environment ground truth and predicted rewards over 1 episode."/>
+            </div>
+            
+            <!-- Crafter -->
+            <div class="content">
+              <h2 class="title is-5 plot-title">Crafter</h2>
+              <img src="./static/images/trajectories/openl_rew_plot_6199654_800b4148117ef5f3c29f.plotly.json.svg"
+                 class="image"
+                 alt="Shadow hand environment ground truth and predicted rewards over 1 episode."/>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TODO make this centered and nice :( -->
+        <div class="column is-full-width"> 
+          <img src="./static/images/trajectories/trajectory_smoothed_legend.svg"
+                 class="image plot-legend"
+                 alt="Legend for reward plots over 1 episode."/>
+        </div>
+        
+        <!-- Performance improved -->
+        <h3 class="title is-4">By Accurately Predicting Rewards, <span class="technique-name">DreamSmooth</span> Improves Performance</h3>
+        <div class="content has-text-justified">
+          <p>
+            More importantly, the improved reward predictions of <span class="technique-name">DreamSmooth</span> 
+            translates to better performance. Our method outperforms DreamerV3 on many sparse-reward environments, 
+            achieving a task completion rate up to 3x higher in a modified Robodesk environment.
+          </p>
+        </div>
+
+        <div class="columns is-centered">
+          <div class="column">
+            <!-- Robodesk -->
+            <div class="content">
+              <h2 class="title is-5 plot-title">Robodesk</h2>
+              <img src="./static/images/learning_curves/Robodesk.svg"
+                 class="image"
+                 alt="Learning curves in robodesk environment."/>
+            </div>
+            <div class="content">
+              <h2 class="title is-5 plot-title">Earthmoving</h2>
+              <img src="./static/images/learning_curves/AGX-rocks-v3.svg"
+                 class="image"
+                 alt="Learning curves in earthmoving environment."/>
+            </div>
+          </div>
+          
+          <div class="column">
+            <!-- Hand -->
+            <div class="content">
+              <h2 class="title is-5 plot-title">ShadowHand</h2>
+              <img src="./static/images/learning_curves/Hand.svg"
+                 class="image"
+                 alt="Learning curves in shadow hand environment."/>
+            </div>
+            <!-- Crafter -->
+            <div class="content">
+              <h2 class="title is-5 plot-title">Crafter</h2>
+              <img src="./static/images/learning_curves/crafter.svg"
+                 class="image"
+                 alt="Learning curves in crafter environment."/>
+            </div>
+          </div>
+        </div>
+
+        <!-- TODO make this centered and nice :( -->
+        <div class="column is-full-width"> 
+          <img src="./static/images/learning_curves/Legend.svg"
+                 class="image plot-legend"
+                 alt="Legend for learning curves."/>
+        </div>
+
+        <div class="content has-text-justified">
+          <p>
+            A notable exception is Crafter, where <span class="technique-name">DreamSmooth</span>,
+            despite producing more accurate reward predictions,
+            tends to perform worse than DreamerV3. 
+          </p>
+        </div>
+
+        <!-- Other Algorithms. -->
+        <h3 class="title is-4"><span class="technique-name">DreamSmooth</span> Works in Other Algorithms Too</h3>
+        <div class="content has-text-justified">
+          <p>
+            We find that reward smoothing can also improve the performance of TD-MPC, 
+            allowing the algorithm to solve the Hand task where it otherwise could not.
+            This suggests that <span class="technique-name">DreamSmooth</span> can be useful in a broad range of MBRL algorithms that use a reward model. 
+          </p>
+        </div>
+        <div class="columns is-centered">
+          <!-- Image -->
+          <div class="column">
+            <div class="content">
+              <h2 class="title is-5 plot-title">ShadowHand (Image Observations)</h2>
+              <img src="./static/images/learning_curves/tdmpc-Pixels.svg"
+                 class="image"
+                 width="80%"
+                 alt="Learning curves in robodesk environment."/>
+            </div>
+          </div>
+          <!-- State -->
+          <div class="column">
+            <div class="content">
+              <h2 class="title is-5 plot-title">ShadowHand (State Observations)</h2>
+              <img src="./static/images/learning_curves/tdmpc-State.svg"
+                 class="image"
+                 width="80%"
+                 alt="Learning curves in shadow hand environment."/>
+            </div>
+          </div>
+        </div>
+
+        <!-- TODO make this centered and nice :( -->
+        <div class="column is-full-width"> 
+          <img src="./static/images/learning_curves/tdmpc-Legend.svg"
+                 class="image plot-legend"
+                 alt="Legend for learning curves with TD-MPC."/>
+        </div>
+        <!--/ Other Algorithms. -->
+
+      </div>
+    </div>
+    <!--/ Animation. -->
+
+  </div>
+</section>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">Citation</h2>
+    <pre><code>
+      @inproceedings{lee2024dreamsmooth,
+        author    = {Vint Lee and Pieter Abbeel and Youngwoon Lee},
+        title     = {DreamSmooth: Improving Model-based Reinforcement Learning via Reward Smoothing},
+        booktitle = {The Twelfth International Conference on Learning Representations},
+        year      = {2024},
+        url       = {https://openreview.net/forum?id=GruDNzQ4ux}
+      }
+</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link" href="https://github.com/vint-1" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            Website template from <a
+              href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
